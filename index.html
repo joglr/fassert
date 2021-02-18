@@ -61,7 +61,7 @@
       assertions = assertions.map(x => x.split("\n- "))
       assertions = assertions.map(([first, second], i, a) => {
           let expected = second.split(" = ", 2)[1].trim()
-          return `assert((${first.replaceAll("\n", "").trim()}) = ${expected.replaceAll("\n", "")})`
+          return `assert((${first.replaceAll(";;", "").replaceAll("\n", "").trim()}) = ${expected.replaceAll("\n", "")})`
       })
       return assertions.join("\n")
     }
