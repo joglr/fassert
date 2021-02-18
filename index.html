@@ -56,15 +56,16 @@
     make.onclick = dostuff
 
     function makeAssertions(text) {
-      let assertions = text.split(/^>/m)
-      assertions = assertions.filter(x => x != "")
-      assertions = assertions.map(x => x.split("\n- "))
-      assertions = assertions.map(([first, second], i, a) => {
-          let expected = second.split(" = ", 2)[1].trim()
-          return `assert((${first.replaceAll(";;", "").replaceAll("\n", "").trim()}) = ${expected.replaceAll("\n", "")})`
-      })
-      return assertions.join("\n")
+    result = "";
+    cleantext = text.replace(/(\r\n|\n|\r)/gm, "");
+    split1 = cleantext.split("> ");
+    for(i = 1; i < split1.length; i++) {
+      split2 = split1[i].split(";;- val it : ");
+      assertion = "assert ((" + split2[0] + ") " + split2[1].substring(split2[1].indexOf("="),split2[1].length) + ")";
+      result += assertion + "\n";
     }
+    return result;
+  }
   </script>
   <script async src="https://cdn.splitbee.io/sb.js"></script>
 </body>
