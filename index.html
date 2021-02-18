@@ -5,37 +5,65 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <style>
+    textarea {
+      height: 200px;
+      width: 100%;
+    }
+  </style>
 </head>
 <body>
-  <textarea id="input"></textarea>
+  <textarea id="input">> arithEval WL [] Map.empty;;
+- val it : int = 0
+> arithEval WL hello Map.empty;;
+- val it : int = 5
+> arithEval (PV (N 0)) hello Map.empty;;
+- val it : int = 4
+> arithEval arithSingleLetterScore hello (Map.ofList [("_pos_", 4); ("_acc_",
+0)]);;
+- val it : int = 1
+> arithEval arithSingleLetterScore hello (Map.ofList [("_pos_", 4); ("_acc_",
+42)]);;
+- val it : int = 43
+> arithEval arithDoubleLetterScore hello (Map.ofList [("_pos_", 4); ("_acc_",
+0)]);;
+- val it : int = 2
+> arithEval arithDoubleLetterScore hello (Map.ofList [("_pos_", 4); ("_acc_",
+42)]);;
+- val it : int = 44
+> arithEval arithTripleLetterScore hello (Map.ofList [("_pos_", 4); ("_acc_",
+0)]);;
+- val it : int = 3
+> arithEval arithTripleLetterScore hello (Map.ofList [("_pos_", 4); ("_acc_",
+42)]);;
+- val it : int = 45</textarea>
+  <button id="make">Make assertions</button>
   <textarea id="output" readonly></textarea>
-
   <script>
     const $ = document.querySelector.bind(document)
     const inp = $("#input")
     const out = $("#output")
-    $("#input").onchange = () => {
-      // try {
+    const make = $("#make")
+    let dostuff = () => {
+      try {
         let result = makeAssertions(inp.value)
         $("#output").textContent = result
-      // } catch(e) {
-        // $("#output").textContent = "Invalid input"
-        // console.error(e)
-      // }
+      } catch(e) {
+        $("#output").textContent = "Invalid input"
+        console.error(e)
+      }
     }
+    make.onclick = dostuff
 
     function makeAssertions(text) {
       let assertions = text.split(/^>/m)
-        .filter(x => x != "")
-      console.log(assertions)
-      assertions = assertions
-        .map(x => x.split(";;\n"))
-        .map(([first, second]) => {
-          let expected = second.split(" = ")[1].trim()
+      assertions = assertions.filter(x => x != "")
+      assertions = assertions.map(x => x.split("\n- "))
+      assertions = assertions.map(([first, second], i, a) => {
+          let expected = second.split(" = ", 2)[1].trim()
           return `assert((${first.replaceAll("\n", "").trim()}) = ${expected.replaceAll("\n", "")})`
       })
       return assertions.join("\n")
-
     }
   </script>
 </body>
