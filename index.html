@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <textarea id="input"></textarea>
+  <textarea id="output" readonly></textarea>
+
+  <script>
+    const $ = document.querySelector.bind(document)
+    const inp = $("#input")
+    const out = $("#output")
+    $("#input").onchange = () => {
+      // try {
+        let result = makeAssertions(inp.value)
+        $("#output").textContent = result
+      // } catch(e) {
+        // $("#output").textContent = "Invalid input"
+        // console.error(e)
+      // }
+    }
+
+    function makeAssertions(text) {
+      let assertions = text.split(/^>/m)
+        .filter(x => x != "")
+      console.log(assertions)
+      assertions = assertions
+        .map(x => x.split(";;\n"))
+        .map(([first, second]) => {
+          let expected = second.split(" = ")[1].trim()
+          return `assert((${first.replaceAll("\n", "").trim()}) = ${expected.replaceAll("\n", "")})`
+      })
+      return assertions.join("\n")
+
+    }
+  </script>
+</body>
+</html>
